@@ -18,10 +18,13 @@ class Dice:
         self.dots = []
         self.color = (0, 0, 0)
 
-THRESH_LEVEL = 100
-MIN_RADIUS = 8
-MIN_DIST = 10
-MAX_DIST = 100
+THRESH_LEVEL = 55  #100
+C_HIGHER_THRESH = 30
+C_LOWER_THRESH = 8   #15
+C_MIN_RADIUS = 4   #8
+C_MAX_RADIUS = C_MIN_RADIUS  #5
+C_MIN_DIST = 2    #10
+MAX_DIST = 35
 
 ids_colored = []
 
@@ -34,10 +37,9 @@ def preprocess(img):
 
 def get_dots(img):
     edges = cv2.Canny(img, 9, 150, 3)
-    circles=cv2.HoughCircles(edges, cv2.HOUGH_GRADIENT, 1, MIN_DIST, param1=30, param2=15, minRadius=MIN_RADIUS, maxRadius=MIN_RADIUS+5)
+    circles=cv2.HoughCircles(edges, cv2.HOUGH_GRADIENT, 1, C_MIN_DIST, param1=C_HIGHER_THRESH, param2=C_LOWER_THRESH, minRadius=C_MIN_RADIUS, maxRadius=C_MAX_RADIUS)
 
     if circles is None:
-        print("No dots")
         return None, edges
 
     dots = []
