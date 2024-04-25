@@ -9,6 +9,7 @@ class Dot:
         self.cords = []
         self.radius = 0
         self.raw = []
+        self.flag = 0
 
 class Dice:
     def __init__(self):
@@ -19,21 +20,23 @@ class Dice:
 
 THRESH_LEVEL = 100
 MIN_RADIUS = 8
-MIN_DIST = 2
+MIN_DIST = 10
+MAX_DIST = 100
+
 ids_colored = []
 
 def main():
 
-    cap = cv2.VideoCapture(0)
+    # cap = cv2.VideoCapture('dice_roll.mp4')
 
     while True:
 
-        ret, frame = cap.read()
+        # ret, frame = cap.read()
 
-        if not ret:
-            print("Camera não identificada")
-            break
-        # frame = cv2.imread("dices.jpg")
+        # if not ret:
+        #     print("Camera não identificada")
+        #     break
+        frame = cv2.imread("dices.jpg")
 
         # frame = cv2.resize(frame, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
 
@@ -52,14 +55,14 @@ def main():
 
 
         cv2.imshow("cam", frame)
-        cv2.imshow("cam1", img)
-        if edges is not None:
-            cv2.imshow("cam3", edges)
+        # cv2.imshow("cam1", img)
+        # if edges is not None:
+        #     cv2.imshow("cam3", edges)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
-    cap.release()
+    # cap.release()
     cv2.destroyAllWindows()
 
 def preprocess(img):
@@ -97,27 +100,28 @@ def draw_dots(img, dices):
             circle = dot.raw
             circle = np.uint16(np.around(circle))
             cv2.circle(img,(circle[0],circle[1]),circle[2],color,2)
-            cv2.putText(img, str(dice.id), (circle[0],circle[1]), cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2, cv2.LINE_AA)
+            # cv2.putText(img, str(dice.id), (circle[0],circle[1]), cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2, cv2.LINE_AA)
   
 
 def get_dices(all_dots):
-    max_dist = 100
     dices = []
     i = 0
+
+    print()
+
 
     for d1 in all_dots:
         dice = Dice()
         dots = []
-        for d2 in all_dots:
-            if d1.id == d2.id:
-                continue
-            dist = math.dist(d1.cords, d2.cords)
-            if dist <= max_dist:
-                dots.append(d2)
-                all_dots.remove(d2)
-        all_dots.remove(d1)
 
-        dots.append(d1)
+        for d2 in all_dots:
+
+            dist = math.dist(d1.cords, d2.cords)
+
+            if dist <= MAX_DIST and d2.flag == 0:
+                dots.append(d2)
+                d2.flag = 1
+
         dice.dots = dots
         dice.sum = len(dice.dots)
         
