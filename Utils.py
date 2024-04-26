@@ -54,15 +54,24 @@ def get_dots(img):
 
     return dots, edges
 
-def draw_dots(img, dices):
+def draw_circles(img, dices):
     for dice in dices:
         dots = dice.dots
         color = dice.color
+        center_x = 0
+        center_y = 0
         for dot in dots:
             circle = dot.raw
             circle = np.uint16(np.around(circle))
-            cv2.circle(img,(circle[0],circle[1]),circle[2],color,2)
+            # cv2.circle(img,(circle[0],circle[1]),circle[2],color,2)
             # cv2.putText(img, str(dice.id), (circle[0],circle[1]), cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2, cv2.LINE_AA)
+            center_x = center_x + circle[0]
+            center_y = center_y + circle[1]
+        center_x = center_x/len(dice.dots)
+        center_y = center_y/len(dice.dots)
+        center = [center_x, center_y]
+        center = np.uint16(np.around(center))
+        cv2.circle(img,(center[0],center[1]),20,color,2)
   
 
 def get_dices(all_dots):

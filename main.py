@@ -12,8 +12,7 @@ else:
     prev_dots_loop = 0
     loop = 0
     prev_dices = []
-    # FRAME_DELAY = 10
-    FRAME_DELAY = 5
+    FRAME_DELAY = 10
     
     while True:
         loop = loop + 1
@@ -38,12 +37,12 @@ else:
                     prev_dices = dices
             else:
                 prev_dots_loop = loop
-            # Utils.draw_dots(frame, prev_dices)
+            Utils.draw_circles(frame, prev_dices)
             Utils.draw_sum(frame, prev_dices)
 
         cv2.imshow("video", frame)
-        cv2.imshow("thresh", img)
-        cv2.imshow("edges", edges)
+        # cv2.imshow("thresh", img)
+        # cv2.imshow("edges", edges)
 
         if cv2.waitKey(25) & 0xFF == ord('q'):
             break
